@@ -59,29 +59,26 @@ func (f Format) ValueForKey(key FormatKey) interface{} {
 }
 
 func (f Format) CompareKey(other Format, key FormatKey) int {
+	return f.IntValueForKey(key) - other.IntValueForKey(key)
+}
+
+func (f Format) IntValueForKey(key FormatKey) int {
 	switch key {
 	case FormatResolutionKey:
 		res := f.ValueForKey(key).(string)
-		res1, res2 := 0, 0
 		if res != "" {
-			res1, _ = strconv.Atoi(res[0 : len(res)-2])
+			res1, _ := strconv.Atoi(res[0 : len(res)-2])
+			return res1
 		}
-		res = other.ValueForKey(key).(string)
-		if res != "" {
-			res2, _ = strconv.Atoi(res[0 : len(res)-2])
-		}
-		return res1 - res2
+		return 0
 	case FormatAudioBitrateKey:
-		return f.ValueForKey(key).(int) - other.ValueForKey(key).(int)
+		return f.ValueForKey(key).(int)
 	case FormatFPSKey:
 		if f.ValueForKey(key) == nil {
-			return -1
-		} else if other.ValueForKey(key) == nil {
-			return 1
+			return 0
 		} else {
-			a, _ := strconv.Atoi(f.ValueForKey(key).(string))
-			b, _ := strconv.Atoi(other.ValueForKey(key).(string))
-			return a - b
+			res, _ := strconv.Atoi(f.ValueForKey(key).(string))
+			return res
 		}
 	default:
 		return 0

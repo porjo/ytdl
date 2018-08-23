@@ -19,19 +19,14 @@ func (formats FormatList) Filter(key FormatKey, values []interface{}) FormatList
 }
 
 func (formats FormatList) Extremes(key FormatKey, best bool) FormatList {
-	dst := formats.Copy()
-	if len(dst) > 1 {
-		dst.Sort(key, best)
-		first := dst[0]
-		var i int
-		for i = 0; i < len(dst)-1; i++ {
-			if first.CompareKey(dst[i+1], key) != 0 {
-				break
-			}
+	dst := make(FormatList, 0)
+	for _, f := range formats {
+		if f.IntValueForKey(key) == 0 {
+			continue
 		}
-		i++
-		dst = dst[0:i]
+		dst = append(dst, f)
 	}
+	dst.Sort(key, best)
 	return dst
 }
 
